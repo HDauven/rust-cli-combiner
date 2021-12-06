@@ -67,3 +67,10 @@ fn standardise_size(image_1: DynamicImage, image_2: DynamicImage) -> (DynamicIma
         (image_1, image_2.resize_exact(width, height, Triangle))
     }
 }
+
+fn combine_images(image_1: DynamicImage, image_2: DynamicImage) -> Vec<u8> {
+    let vec_1 = image_1.to_rgba8().into_vec();
+    let vec_2 = image_2.to_rgba8().into_vec();
+
+    alternate_pixels(vec_1, vec_2)
+}
