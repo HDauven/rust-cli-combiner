@@ -4,6 +4,7 @@ use image::{ io::Reader, DynamicImage, ImageFormat, GenericImageView, imageops::
 use std::{ io::BufReader, fs::File };
 use std::convert::TryInto;
 
+#[derive(Debug)]
 enum ImageDataErrors {
     DifferentImageFormats,
 }
@@ -39,6 +40,7 @@ fn main() -> Result<(), ImageDataErrors> {
     }
 
     let (image_1, image_2) = standardise_size(image_1, image_2);
+    let output = FloatingImage::new(image_1.width(), image_1.height(), args.output);
     Ok(())
 }
 
