@@ -7,7 +7,8 @@ use std::convert::TryInto;
 #[derive(Debug)]
 enum ImageDataErrors {
     DifferentImageFormats,
-    BufferTooSmall
+    BufferTooSmall,
+    UnableToReadImageFromPath(std::io::Error)
 }
 
 struct FloatingImage {
@@ -58,10 +59,14 @@ fn main() -> Result<(), ImageDataErrors> {
 }
 
 fn find_image_from_path(path: String) -> (DynamicImage, ImageFormat) {
-    let image_reader: Reader<BufReader<File>> = Reader::open(path).unwrap();
-    let image_format: ImageFormat = image_reader.format().unwrap();
-    let image: DynamicImage = image_reader.decode().unwrap();
-    (image, image_format)
+    match Reader::open(path) {
+        Ok(image_reader) => {            
+            let image_format: ImageFormat = image_reader.format().unwrap();
+            let image: DynamicImage = image_reader.decode().unwrap();
+            (image, image_format)
+        },
+        Err(e) => Err(ImageDataErrors::UnableToReadImageFromPath(e))
+    }
 }
 
 fn get_smallest_dimension(dim_1: (u32, u32), dim_2: (u32, u32)) -> (u32, u32) {
